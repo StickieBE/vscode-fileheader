@@ -1,8 +1,8 @@
 /*
  * @Author: mikey.zhaopeng
  * @Date:   2016-07-29 15:57:29
- * @Last Modified by: Eastegg
- * @Last Modified time: 2018-02-5 18:05:49
+ * @Last Modified by: Stickie
+ * @Last Modified time: 2019-03-01 18:36:17
  */
 
 var vscode = require('vscode');
@@ -33,15 +33,6 @@ function activate(context) {
     console.log('"vscode-fileheader" is now active!');
     var disposable = vscode.commands.registerCommand('extension.fileheader', function () {
         var editor = vscode.editor || vscode.window.activeTextEditor;
-                                    
-        /*
-        * @Author: huangyuan
-        * @Date: 2017-02-28 17:51:35
-        * @Last Modified by:   huangyuan413026@163.com
-        * @Last Modified time: 2017-02-28 17:51:35
-        * @description: 在当前行插入,而非在首行插入
-        */
-                
         var line = editor.selection.active.line;
         editor.edit(function (editBuilder) {
             var time = new Date().format("yyyy-MM-dd hh:mm:ss");
@@ -50,7 +41,8 @@ function activate(context) {
                 email: config.Email,
                 lastModifiedBy: config.LastModifiedBy,
                 createTime: time,
-                updateTime: time
+                updateTime: time,
+                fileName: editor.document.fileName.replace(/^.*[\\\/]/, '')
             }
             try {
                 var tpl = new template(config.tpl).render(data);;
@@ -80,29 +72,28 @@ function activate(context) {
                 var comment = false;
                 for (var i = 0; i < lineCount; i++) {
                     var linetAt = document.lineAt(i);
-                    
                     var line = linetAt.text;
                     line = line.trim();
-                    if (line.startsWith("/*") && !line.endsWith("*/")) {//是否以 /* 开头
-                        comment = true;//表示开始进入注释
+                    if (line.startsWith("/*") && !line.endsWith("*/")) {
+                        comment = true;
                     } else if (comment) {
                         if (line.endsWith("*/")) {
-                            comment = false;//结束注释
+                            comment = false;
                         }
                         var range = linetAt.range;
-                        if (line.indexOf('@Last\ Modified\ by') > -1) {//表示是修改人
+                        if (line.indexOf('Edited\ by:\ ') > -1) {
                             authorRange = range;
-                            authorText=' * @Last Modified by: ' + config.LastModifiedBy;
-                        } else if (line.indexOf('@Last\ Modified\ time') > -1) {//最后修改时间
-                            var time = line.replace('@Last\ Modified\ time:', '').replace('*', '');
+                            authorText='\tEdited by: ' + config.LastModifiedBy;
+                        } else if (line.indexOf('Last\ modified\ time:\ ') > -1) {
+                            var time = line.replace('Last\ modified\ time:\ ', '').replace('*', '');
                             var oldTime = new Date(time);
                             var curTime = new Date();
                             var diff = (curTime - oldTime) / 1000;
                             lastTimeRange = range;
-                            lastTimeText=' * @Last Modified time: ' + curTime.format("yyyy-MM-dd hh:mm:ss");
+                            lastTimeText='\tLast modified time: ' + curTime.format("yyyy-MM-dd hh:mm:ss");
                         }
                         if (!comment) {
-                            break;//结束
+                            break;
                         }
                     }
                 }
@@ -126,8 +117,6 @@ function activate(context) {
 function getConfiguration() {
     return vscode.workspace.getConfiguration('mocha');
 }
-
-
 
 function getLineText(lineNum, editor) {
     const document = editor.document;
@@ -156,8 +145,6 @@ function replaceLineText(lineNum, text, editor) {
     });
 
 }
-
-
 
 /**
  * template engine
