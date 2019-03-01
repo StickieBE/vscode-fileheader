@@ -2,7 +2,7 @@
 	"name": "vscode-fileheader",
 	"displayName": "vscode-fileheader",
 	"description": "Inserts a header comment (CTRL+ALT+I) and automatically updates the timestamp when saved.",
-	"version": "0.0.2b",
+	"version": "0.0.2",
 	"publisher": "mikey",
 	"author": {
 		"name": "Stickie, forked from mikey.zhaopeng (http://zhaopeng.me)",
