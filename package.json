@@ -51,6 +51,11 @@
 					"type": "string",
 					"default": "Stickie",
 					"description": "Your username when updating files. (kinda obsolete really)"
+				},
+				"fileheader.email": {
+					"type": "string",
+					"default": "stickie@armaniacs.org",
+					"description": "Your email."
 				}
 			}
 		},
