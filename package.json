@@ -52,7 +52,7 @@
 					"default": "Stickie",
 					"description": "Your username when updating files. (kinda obsolete really)"
 				},
-				"fileheader.email": {
+				"fileheader.Email": {
 					"type": "string",
 					"default": "stickie@armaniacs.org",
 					"description": "Your email."
